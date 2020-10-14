@@ -2,6 +2,20 @@
 
 public static class MatrixExtensions
 {
+    public static void SetValuesFromArray(ref this Matrix4x4 matrix, float[] array)
+    {
+        if (array.Length != 16)
+            return;
+        for (int i = 1; i < 16; ++i)
+        {
+            matrix[i / 4, i % 4] = array[i];
+        }
+    }
+    /// <summary>
+    /// Extracts quaterion from TRS-matrix
+    /// </summary>
+    /// <param name="matrix"></param>
+    /// <returns></returns>
     public static Quaternion ExtractRotation(this Matrix4x4 matrix)
     {
         Quaternion q = new Quaternion();
@@ -14,7 +28,11 @@ public static class MatrixExtensions
         q.z *= Mathf.Sign(q.z * (matrix[1, 0] - matrix[0, 1]));
         return q;
     }
-
+    /// <summary>
+    /// Extracts position from TRS-matrix
+    /// </summary>
+    /// <param name="matrix"></param>
+    /// <returns></returns>
     public static Vector3 ExtractPosition(this Matrix4x4 matrix)
     {
         Vector3 position;
@@ -23,7 +41,11 @@ public static class MatrixExtensions
         position.z = matrix.m23;
         return position;
     }
-
+    /// <summary>
+    /// Extracts scale from TRS-matrix
+    /// </summary>
+    /// <param name="matrix"></param>
+    /// <returns></returns>
     public static Vector3 ExtractScale(this Matrix4x4 matrix)
     {
         Vector3 scale;

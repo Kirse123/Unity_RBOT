@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class PoseEstimatorAsync : ThreadedJob
 {
-    private float[] _outData;
+    public float[] _outData;
     public float[] OutData { get { return _outData; } }
 
     private int _result = -1;
@@ -20,16 +19,14 @@ public class PoseEstimatorAsync : ThreadedJob
     {
         unsafe
         {
-            fixed(float* ptr = this._outData)
+            fixed(float* ptr = _outData)
             {
                 this._result = RBOT_Interop.GetPose(ptr);
             }
         }
     }
-}
-
-internal static class RBOT_Interop
-{
-    [DllImport("RBOT")]
-    internal static extern unsafe int GetPose(float* outData);
+    protected override void OnFinished()
+    {
+        base.OnFinished();
+    }
 }

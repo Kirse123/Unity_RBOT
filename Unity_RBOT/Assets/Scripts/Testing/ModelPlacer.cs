@@ -8,17 +8,23 @@ public class ModelPlacer : MonoBehaviour
     private GameObject modelPrefab;
     private List<Vector4> rMat;
     private Vector3 tranformVect;
+    private GameObject model;
+    private Matrix4x4 F;
+    private bool modelPlaced = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        RBOT_Controller.instance.RBOT_PoseEstimated += OnPoseEstimated;
         
-        List<Vector4> rowList = new List<Vector4>();
+        //================================DEBUG=========================================
+        
+        //List<Vector4> rowList = new List<Vector4>();
 
-        rowList.Add(new Vector4(-0.85165083f, 0.011513352f, -0.52398312f, 0f));
-        rowList.Add(new Vector4(0.39713106f, -0.63824002f, -0.65949702f, 0f));
-        rowList.Add(new Vector4(-0.34202012f, -0.76975113f, 0.53898555f, 0f));
-        rowList.Add(new Vector4(15f, -35f, 515f, 1f));
+        //rowList.Add(new Vector4(-0.85165083f, 0.011513352f, -0.52398312f, 0f));
+        //rowList.Add(new Vector4(0.39713106f, -0.63824002f, -0.65949702f, 0f));
+        //rowList.Add(new Vector4(-0.34202012f, -0.76975113f, 0.53898555f, 0f));
+        //rowList.Add(new Vector4(15f, -35f, 515f, 1f));
 
         //====Test rotate 30 around Y=================================
         //[0.86602539, 0, 0.5, 0;
@@ -57,26 +63,26 @@ public class ModelPlacer : MonoBehaviour
         //rowList.Add(new Vector4(0f, 1f, 0f, 0f));
         //rowList.Add(new Vector4(0f, 0f, 1f, 0f));
         //rowList.Add(new Vector4(15f, -35f, 515f, 1f));
-        //============================================================
 
-        Matrix4x4 trsMat = new Matrix4x4(rowList[0], rowList[1], rowList[2], rowList[3]);
+        //Matrix4x4 trsMat = new Matrix4x4(rowList[0], rowList[1], rowList[2], rowList[3]);
         
+
         //=================================================================================================
         //F = [1  0  0  0]
         //    [0 -1  0  0]
         //    [0  0  1  0]
         //    [0  0  0  1] 
-        Matrix4x4 F = new Matrix4x4(new Vector4(  1,  0,  0, 0), 
-                                    new Vector4(  0, -1,  0, 0), 
-                                    new Vector4(  0,  0,  1, 0), 
-                                    new Vector4(  0,  0,  0, 1));
-        trsMat = F * trsMat * F.inverse;
+        F = new Matrix4x4(new Vector4(  1,  0,  0, 0), 
+                          new Vector4(  0, -1,  0, 0), 
+                          new Vector4(  0,  0,  1, 0), 
+                          new Vector4(  0,  0,  0, 1));
         //================================================================================================
 
-        GameObject placedModel = Instantiate(modelPrefab, Camera.main.transform);
-        placedModel.transform.localPosition = trsMat.ExtractPosition();
-        placedModel.transform.localRotation = trsMat.ExtractRotation();
-        placedModel.transform.localScale = trsMat.ExtractScale();
+        //trsMat = F * trsMat * F.inverse;
+        //model = Instantiate(modelPrefab, Camera.main.transform);
+        //model.transform.localPosition = trsMat.ExtractPosition();
+        //model.transform.localRotation = trsMat.ExtractRotation();
+        //model.transform.localScale = trsMat.ExtractScale();
         
         //placedModel.transform.localScale = new Vector3(-placedModel.transform.localScale.x,
         //                                               -placedModel.transform.localScale.y,
@@ -102,7 +108,37 @@ public class ModelPlacer : MonoBehaviour
         Debug.Log(Matrix4x4.Rotate(Quaternion.Euler(55, -35, 205)));
         Debug.LogFormat(" cameraToWorldMatrix {0}", Camera.main.cameraToWorldMatrix);
         ====================================================================================================================*/
+    }
+
+    private void OnPoseEstimated(RBOT_Controller.RBOT_ResultCode result)
+    {
+        if (result == RBOT_Controller.RBOT_ResultCode.Successfully)
+        {
+            if (!this.modelPlaced)
+            {
+                PlaceModel();
+            }
+            UpdateModelPos();
+        }
+    }
+
+    private void PlaceModel()
+    {
+        Matrix4x4 trsMat = F * RBOT_Controller.instance.CurrentTRS_Matrix * F.inverse;
+        this.model = Instantiate(modelPrefab, Camera.main.transform);
+        this.model.transform.localPosition = trsMat.ExtractPosition();
+        this.model.transform.localRotation = trsMat.ExtractRotation();
+        this.model.transform.localScale = trsMat.ExtractScale();
+        this.modelPlaced = true;
+    }
+
+    private void UpdateModelPos()
+    {
+        Matrix4x4 trsMat = F * RBOT_Controller.instance.CurrentTRS_Matrix * F.inverse;
 
         Debug.Log(trsMat);
+
+        this.model.transform.localPosition = trsMat.ExtractPosition();
+        this.model.transform.localRotation = trsMat.ExtractRotation();
     }
 }

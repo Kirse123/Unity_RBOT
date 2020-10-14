@@ -29,7 +29,7 @@ public class RBOT_Model : MonoBehaviour
     private void Start()
     {
         if (!this.IsFliipped)
-            Flip(_mesh);
+            Flip(_mesh);        
     }
 
     /// <summary>

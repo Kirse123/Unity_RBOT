@@ -6,6 +6,8 @@ using UnityEngine;
 public class MyARCamera : MonoBehaviour
 {
     private WebCamTexture _webCamTexture;
+    public WebCamTexture WebCam { get { return _webCamTexture; } }
+
     private Texture2D _testImage;
 
     private bool _cameraIsAvailable = false;
