@@ -82,7 +82,9 @@ namespace RBOT_UnityPlugin
 
         public bool isTracking;
 
-        public float[,] TRS;
+        public Matrix4x4 TRS;
+
+        public GameObject Model;
 
         public Object3D(string fullFileName, float tx, float ty, float tz, float alpha, float beta, float gamma, float scale)
         {
@@ -97,7 +99,7 @@ namespace RBOT_UnityPlugin
 
             isTracking = false;
 
-            TRS = new float[4, 4];
+            TRS = new Matrix4x4();
         }
     }
 }

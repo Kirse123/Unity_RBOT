@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class ModelPlacer : MonoBehaviour
 {
     [SerializeField]
@@ -11,7 +11,7 @@ public class ModelPlacer : MonoBehaviour
     private GameObject model;
     private Matrix4x4 F;
     private bool modelPlaced = false;
-
+    /*
     // Start is called before the first frame update
     void Start()
     {
@@ -107,9 +107,9 @@ public class ModelPlacer : MonoBehaviour
 
         Debug.Log(Matrix4x4.Rotate(Quaternion.Euler(55, -35, 205)));
         Debug.LogFormat(" cameraToWorldMatrix {0}", Camera.main.cameraToWorldMatrix);
-        ====================================================================================================================*/
+        ====================================================================================================================
     }
-
+    /*
     private void OnPoseEstimated(RBOT_Controller.RBOT_ResultCode result)
     {
         if (result == RBOT_Controller.RBOT_ResultCode.Successfully)
@@ -140,5 +140,6 @@ public class ModelPlacer : MonoBehaviour
 
         this.model.transform.localPosition = trsMat.ExtractPosition();
         this.model.transform.localRotation = trsMat.ExtractRotation();
-    }
+    }   
 }
+*/

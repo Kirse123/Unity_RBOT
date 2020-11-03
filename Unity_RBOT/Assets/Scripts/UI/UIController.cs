@@ -8,11 +8,11 @@ public class UIController : MonoBehaviour
     public static UIController instance;
 
     [SerializeField]
-    private Button InitBtn;
+    private Button PauseBtn;
     [SerializeField]
-    private Button PoseEstimationBtn;
+    private Button ResumeBtn; 
     [SerializeField]
-    private Button CloseBtn;
+    private Button ResetBtn;
     [SerializeField]
     private Text fpsCounter;
 
@@ -22,33 +22,36 @@ public class UIController : MonoBehaviour
         if (UIController.instance == null)
             UIController.instance = this;
     }
-
+    
     private void Start()
     {
-        InitBtn.onClick.AddListener(OnInitClicked);
-        PoseEstimationBtn.onClick.AddListener(OnEstimateClicked);
-        CloseBtn.onClick.AddListener(OnCloseBtnClicked);
+        PauseBtn.onClick.AddListener(OnPauseBtnClicked);
+        ResumeBtn.onClick.AddListener(OnResumeBtnClicked);
+        ResetBtn.onClick.AddListener(OnResetBtnClicked);
         fpsCounter.text = "";
     }
 
-    private void OnInitClicked()
+    private void Update()
     {
-        Debug.Log("Click!!!");
-        RBOT_Controller.instance.Init();
+        fpsCounter.text = Mathf.Round(1f / Time.unscaledDeltaTime).ToString() + " FPS";
     }
 
-    private void OnEstimateClicked()
+    private void OnResetBtnClicked()
     {
-        Debug.Log("Click!!!   ");
-        RBOT_Controller.instance.EstimatePose();
+        RBOT_SceneController.Instance.ResetTracking();
+        PauseBtn.gameObject.SetActive(false);
+        ResumeBtn.gameObject.SetActive(true);
     }
-
-    private void OnCloseBtnClicked()
+    private void OnPauseBtnClicked()
     {
-        RBOT_Controller.instance.Close();
+        PauseBtn.gameObject.SetActive(false);
+        RBOT_SceneController.Instance.PauseTracking();
+        ResumeBtn.gameObject.SetActive(true);
     }
-    private void OnPoseEstimated(RBOT_Controller.RBOT_ResultCode result)
+    private void OnResumeBtnClicked()
     {
-        
+        ResumeBtn.gameObject.SetActive(false);
+        RBOT_SceneController.Instance.ResumeTracking();
+        PauseBtn.gameObject.SetActive(true);
     }
 }
